@@ -14,7 +14,7 @@ class PetRepository:
             except NoResultFound:
                 return []
 
-    def delete_pets(self, name: str) -> None:
+    def delete_pet(self, name: str) -> None:
         with self.__db_connection as database:
             try:
                 (
