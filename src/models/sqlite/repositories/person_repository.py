@@ -2,8 +2,9 @@ from typing import List
 from sqlalchemy.orm.exc import NoResultFound
 from src.models.sqlite.entities.person import PersonTable
 from src.models.sqlite.entities.pet import PetTable
+from ..interface.person_repository import PersonRepositoryInterface
 
-class PersonRepository:
+class PersonRepository(PersonRepositoryInterface):
     def __init__(self, db_connection) -> None:
         self.__db_connection = db_connection
 
@@ -23,6 +24,14 @@ class PersonRepository:
                 database.session.rollback()
                 raise exception
 
+    def list_people(self) -> List[PersonTable]:
+        with self.__db_connection as database:
+            try:
+                people = database.session.query(PersonTable).all()
+                return people
+            except NoResultFound:
+                return []
+
     def get_person(self, person_id: int) -> PersonTable:
         with self.__db_connection as database:
             try:
@@ -40,14 +49,6 @@ class PersonRepository:
                 return person
             except NoResultFound:
                 return None
-
-    def list_people(self) -> List[PersonTable]:
-        with self.__db_connection as database:
-            try:
-                pets = database.session.query(PersonTable).all()
-                return pets
-            except NoResultFound:
-                return []
 
     def delete_person(self, name: str) -> None:
         with self.__db_connection as database:
