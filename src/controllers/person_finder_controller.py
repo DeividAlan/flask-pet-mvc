@@ -1,5 +1,6 @@
 from typing import Dict
 from src.models.sqlite.interface.person_repository import PersonRepositoryInterface, PersonWithPet
+from src.errors.errors_types.http_not_found import HttpNotFoundError
 from .interfaces.person_finder_controller import PersonFinderControllerInterface
 
 class PersonFinderController(PersonFinderControllerInterface):
@@ -15,7 +16,7 @@ class PersonFinderController(PersonFinderControllerInterface):
         person_with_pet: PersonWithPet = self.__person_repository.get_person(person_id)
 
         if not person_with_pet:
-            raise Exception("Person not found")
+            raise HttpNotFoundError("Person not found")
 
         return person_with_pet._asdict()
 
