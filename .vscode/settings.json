@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "brind",
+        "jsonify",
         "sessionmaker",
         "sqlalchemy"
     ],
