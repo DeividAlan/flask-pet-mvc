@@ -1,0 +1,64 @@
+from typing import List
+from sqlalchemy.orm.exc import NoResultFound
+from src.models.sqlite.entities.person import PersonTable
+from src.models.sqlite.entities.pet import PetTable
+
+class PersonRepository:
+    def __init__(self, db_connection) -> None:
+        self.__db_connection = db_connection
+
+    def insert_person(self, first_name: str, last_name: str, age: int, pet_id: int) -> None:
+        with self.__db_connection as database:
+            try:
+                person_data = PersonTable(
+                    first_name = first_name,
+                    last_name = last_name,
+                    age = age,
+                    pet_id = pet_id,
+                )
+
+                database.session.add(person_data)
+                database.session.commit()
+            except Exception as exception:
+                database.session.rollback()
+                raise exception
+
+    def get_person(self, person_id: int) -> PersonTable:
+        with self.__db_connection as database:
+            try:
+                person = (
+                        database.session.query(
+                        PersonTable.first_name,
+                        PersonTable.last_name,
+                        PetTable.name.label("pet_name"),
+                        PetTable.type.label("pet_type"),
+                    )
+                    .outerjoin(PetTable, PetTable.id == PersonTable.pet_id)
+                    .filter(PersonTable.id == person_id)
+                    .one()
+                )
+                return person
+            except NoResultFound:
+                return None
+
+    def list_people(self) -> List[PersonTable]:
+        with self.__db_connection as database:
+            try:
+                pets = database.session.query(PersonTable).all()
+                return pets
+            except NoResultFound:
+                return []
+
+    def delete_person(self, name: str) -> None:
+        with self.__db_connection as database:
+            try:
+                (
+                    database.session
+                        .query(PersonTable)
+                        .filter(PersonTable.name == name)
+                        .delete()
+                )
+                database.session.commit()
+            except Exception as exception:
+                database.session.rollback()
+                raise exception
