@@ -1,8 +1,9 @@
 from typing import Dict, List
 from src.models.sqlite.interface.pet_repository import PetRepositoryInterface
 from src.models.sqlite.entities.pet import PetTable
+from .interfaces.pet_list_controller import PetListControllerInterface
 
-class PetListController():
+class PetListController(PetListControllerInterface):
     def __init__(self, pet_repository: PetRepositoryInterface) -> None:
         self.__pet_repository = pet_repository
 
