@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm.exc import NoResultFound
 from src.models.sqlite.entities.person import PersonTable
 from src.models.sqlite.entities.pet import PetTable
-from ..interface.person_repository import PersonRepositoryInterface
+from ..interface.person_repository import PersonRepositoryInterface, PersonWithPet
 
 class PersonRepository(PersonRepositoryInterface):
     def __init__(self, db_connection) -> None:
@@ -32,7 +32,7 @@ class PersonRepository(PersonRepositoryInterface):
             except NoResultFound:
                 return []
 
-    def get_person(self, person_id: int) -> PersonTable:
+    def get_person(self, person_id: int) -> Optional[PersonWithPet]:
         with self.__db_connection as database:
             try:
                 person = (
@@ -46,7 +46,12 @@ class PersonRepository(PersonRepositoryInterface):
                     .filter(PersonTable.id == person_id)
                     .one()
                 )
-                return person
+                return PersonWithPet(
+                    first_name=person.first_name,
+                    last_name=person.last_name,
+                    pet_name=person.pet_name,
+                    pet_type=person.pet_type
+                )
             except NoResultFound:
                 return None
 

@@ -1,6 +1,12 @@
-from typing import List
+from typing import List, NamedTuple, Optional
 from abc import ABC, abstractmethod
 from src.models.sqlite.entities.person import PersonTable
+
+class PersonWithPet(NamedTuple):
+    first_name: str
+    last_name: str
+    pet_name: Optional[str]
+    pet_type: Optional[str]
 
 class PersonRepositoryInterface(ABC):
 
@@ -9,7 +15,7 @@ class PersonRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def get_person(self, person_id: int) -> PersonTable:
+    def get_person(self, person_id: int) -> Optional[PersonWithPet]:
         pass
 
     @abstractmethod

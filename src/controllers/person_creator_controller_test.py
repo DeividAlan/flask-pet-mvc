@@ -7,7 +7,7 @@ class MockPersonRepository():
 
 def test_create():
     person_info = {
-        "first_name": "Jhon",
+        "first_name": "John",
         "last_name": "Doe",
         "age": 30,
         "pet_id": 123
@@ -22,7 +22,7 @@ def test_create():
 
 def test_create_error():
     person_info = {
-        "first_name": "Jhon123",
+        "first_name": "John123",
         "last_name": "Doe",
         "age": 30,
         "pet_id": 123
